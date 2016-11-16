@@ -67,29 +67,29 @@ public class WorkoutContract {
 //        }
     }
 
-//    /* Inner class that defines the table contents of the activity table */
-//    public static final class ActivityEntry implements BaseColumns {
-//
-//        public static final Uri CONTENT_URI =
-//                BASE_CONTENT_URI.buildUpon().appendPath(PATH_ACTIVITIES).build();
-//
-//        public static final String CONTENT_TYPE =
-//                ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_ACTIVITIES;
-//        public static final String CONTENT_ITEM_TYPE =
-//                ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_ACTIVITIES;
-//
-//        public static final String TABLE_NAME = "activity";
-//
-//        public static final String COLUMN_ACTIVITY_MG_ID = "muscle_group_id";
-//        public static final String COLUMN_ACTIVITY_NAME = "activity_name";
-//        public static final String COLUMN_ACTIVITY_DESCRIPTION = "activity_description";
-//        public static final String COLUMN_ACTIVITY_IMAGE = "activity_image";
-//        public static final String COLUMN_ACTIVITY_VIDEO = "activity_video";
-//
-//        public static Uri buildActivityUri(long id) {
-//            return ContentUris.withAppendedId(CONTENT_URI, id);
-//        }
-//    }
+    /* Inner class that defines the table contents of the activity table */
+    public static final class ActivityEntry implements BaseColumns {
+
+        public static final Uri CONTENT_URI =
+                BASE_CONTENT_URI.buildUpon().appendPath(PATH_ACTIVITIES).build();
+
+        public static final String CONTENT_TYPE =
+                ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_ACTIVITIES;
+        public static final String CONTENT_ITEM_TYPE =
+                ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_ACTIVITIES;
+
+        public static final String TABLE_NAME = "activity";
+
+        public static final String COLUMN_ACTIVITY_MG_ID = "muscle_group_id";
+        public static final String COLUMN_ACTIVITY_NAME = "activity_name";
+        public static final String COLUMN_ACTIVITY_DESCRIPTION = "activity_description";
+        public static final String COLUMN_ACTIVITY_IMAGE = "activity_image";
+        public static final String COLUMN_ACTIVITY_VIDEO = "activity_video";
+
+        public static Uri buildActivityUri(long id) {
+            return ContentUris.withAppendedId(CONTENT_URI, id);
+        }
+    }
 //
 //    /* Inner class that defines the table contents of the activity table */
 //    public static final class SessionEntry implements BaseColumns {

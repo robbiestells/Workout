@@ -13,9 +13,11 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.example.android.workout.data.ActivitiesCursorAdapter;
 import com.example.android.workout.data.MuscleGroupCursorAdapter;
 import com.example.android.workout.data.WorkoutContract;
 
@@ -27,10 +29,20 @@ public class MainActivity extends AppCompatActivity implements LoaderCallbacks<C
 
     MuscleGroupCursorAdapter mCursorAdapter;
 
+    ActivitiesCursorAdapter mActivitiesAdapter;
+
+    private Uri mCurrentProductUri;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        Intent intent = getIntent();
+        mCurrentProductUri = intent.getData();
+
+//        mNameEditText = (EditText) findViewById(R.id.MuscleNameEditText);
 
         //set up FAB to open Product Editor
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -49,19 +61,30 @@ public class MainActivity extends AppCompatActivity implements LoaderCallbacks<C
         muscleListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                Intent intent = new Intent(MainActivity.this, ActivityList.class);
-//
-//                Uri selectedMuscle = ContentUris.withAppendedId(WorkoutContract.MuscleGroupEntry.CONTENT_URI, id);
-//
-//                intent.setData(selectedMuscle);
-//
-//                startActivity(intent);
+                Intent intent = new Intent(MainActivity.this, MainActivity.class);
+
+                Uri selectedMuscle = ContentUris.withAppendedId(WorkoutContract.MuscleGroupEntry.CONTENT_URI, id);
+
+                intent.setData(selectedMuscle);
+
+                startActivity(intent);
             }
         });
 
-        mCursorAdapter = new MuscleGroupCursorAdapter(this,null);
-        muscleListView.setAdapter(mCursorAdapter);
-        getSupportLoaderManager().initLoader(URL_LOADER, null, this);
+        if (mCurrentProductUri == null) {
+            setTitle("Muscle Groups");
+            //   invalidateOptionsMenu();
+            mCursorAdapter = new MuscleGroupCursorAdapter(this,null);
+            muscleListView.setAdapter(mCursorAdapter);
+            getSupportLoaderManager().initLoader(URL_LOADER, null, this);
+        } else {
+            setTitle("Activities");
+            //TODO load activities
+            mActivitiesAdapter = new ActivitiesCursorAdapter(this, null);
+            muscleListView.setAdapter(mActivitiesAdapter);
+            getSupportLoaderManager().initLoader(URL_LOADER, null, this);
+        }
+
     }
 
 
