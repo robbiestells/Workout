@@ -1,21 +1,25 @@
 package com.example.android.workout;
 
-import android.app.LoaderManager;
-import android.content.CursorLoader;
+import android.content.ContentUris;
 import android.content.Intent;
-import android.content.Loader;
 import android.database.Cursor;
-import android.os.Bundle;
+import android.net.Uri;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.LoaderManager.LoaderCallbacks;
+import android.support.v4.content.Loader;
+import android.support.v4.content.CursorLoader;
 import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.example.android.workout.data.MuscleGroupCursorAdapter;
 import com.example.android.workout.data.WorkoutContract;
 
-public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
+public class MainActivity extends AppCompatActivity implements LoaderCallbacks<Cursor> {
 
     private final String LOG_TAG = MainActivity.class.getSimpleName();
 
@@ -56,6 +60,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         });
 
         mCursorAdapter = new MuscleGroupCursorAdapter(this,null);
+        muscleListView.setAdapter(mCursorAdapter);
         getSupportLoaderManager().initLoader(URL_LOADER, null, this);
     }
 
