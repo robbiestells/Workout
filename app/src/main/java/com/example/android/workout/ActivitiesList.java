@@ -15,11 +15,13 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.android.workout.data.ActivitiesCursorAdapter;
 import com.example.android.workout.data.MuscleGroupCursorAdapter;
 import com.example.android.workout.data.WorkoutContract;
+import com.example.android.workout.data.WorkoutContract.ActivityEntry;
 
 import static com.example.android.workout.R.id.muscleListView;
 
@@ -56,6 +58,8 @@ public class ActivitiesList extends AppCompatActivity implements LoaderCallbacks
         });
 
         ListView listView = (ListView) findViewById(R.id.muscleListView);
+        TextView emptyText = (TextView) findViewById(R.id.empty_text);
+        emptyText.setText("Add Activity");
         View emptyView = findViewById(R.id.empty_text);
         listView.setEmptyView(emptyView);
 
@@ -72,7 +76,7 @@ public class ActivitiesList extends AppCompatActivity implements LoaderCallbacks
             }
         });
 
-//        setTitle("Activities");
+        setTitle("Activities");
 //        //TODO load activities
 //        mActivitiesAdapter = new ActivitiesCursorAdapter(this, null);
 //        muscleListView.setAdapter(mActivitiesAdapter);
@@ -84,14 +88,17 @@ public class ActivitiesList extends AppCompatActivity implements LoaderCallbacks
     @Override
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
         String[] projection = {
-                WorkoutContract.MuscleGroupEntry._ID,
-                WorkoutContract.MuscleGroupEntry.COLUMN_MG_COLOR,
-                WorkoutContract.MuscleGroupEntry.COLUMN_MG_IMAGE,
-                WorkoutContract.MuscleGroupEntry.COLUMN_MG_NAME
+                ActivityEntry._ID,
+                ActivityEntry.COLUMN_ACTIVITY_MG_ID,
+                ActivityEntry.COLUMN_ACTIVITY_NAME,
+                ActivityEntry.COLUMN_ACTIVITY_DESCRIPTION,
+                ActivityEntry.COLUMN_ACTIVITY_IMAGE,
+                ActivityEntry.COLUMN_ACTIVITY_VIDEO
         };
+
         return new CursorLoader(
                 this,
-                WorkoutContract.MuscleGroupEntry.CONTENT_URI,
+                ActivityEntry.CONTENT_URI,
                 projection,
                 null,
                 null,

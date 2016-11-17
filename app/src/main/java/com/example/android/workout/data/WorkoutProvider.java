@@ -10,6 +10,7 @@ import android.net.Uri;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import com.example.android.workout.data.WorkoutContract.ActivityEntry;
 import com.example.android.workout.data.WorkoutContract.MuscleGroupEntry;
 
 /**
@@ -23,7 +24,8 @@ public class WorkoutProvider extends ContentProvider {
 
     private static final int MUSCLE = 100;
     private static final int MUSCLE_ID = 101;
-    private static final int Activity = 200;
+    private static final int ACTIVITY = 200;
+    private static final int ACTIVITY_ID = 201;
     private static final int SESSION = 300;
 
     private static final UriMatcher sUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
@@ -31,6 +33,8 @@ public class WorkoutProvider extends ContentProvider {
     static {
         sUriMatcher.addURI(WorkoutContract.CONTENT_AUTHORITY, WorkoutContract.PATH_MUSCLEGROUP, MUSCLE);
         sUriMatcher.addURI(WorkoutContract.CONTENT_AUTHORITY, WorkoutContract.PATH_MUSCLEGROUP + "/#", MUSCLE_ID);
+        sUriMatcher.addURI(WorkoutContract.CONTENT_AUTHORITY, WorkoutContract.PATH_ACTIVITIES, ACTIVITY);
+        sUriMatcher.addURI(WorkoutContract.CONTENT_AUTHORITY, WorkoutContract.PATH_ACTIVITIES + "/#", ACTIVITY_ID);
     }
     @Override
     public boolean onCreate() {
@@ -56,6 +60,14 @@ public class WorkoutProvider extends ContentProvider {
                 selectionArgs = new String[]{String.valueOf(ContentUris.parseId(uri))};
                 cursor = database.query(MuscleGroupEntry.TABLE_NAME, projection, selection, selectionArgs, null, null, sortOrder);
                 break;
+            case ACTIVITY:
+                cursor = database.query(ActivityEntry.TABLE_NAME, projection, selection, selectionArgs, null, null, sortOrder);
+                break;
+            case ACTIVITY_ID:
+                selection = ActivityEntry._ID + "=?";
+                selectionArgs = new String[]{String.valueOf(ContentUris.parseId(uri))};
+                cursor = database.query(ActivityEntry.TABLE_NAME, projection, selection, selectionArgs, null, null, sortOrder);
+                break;
             default:
                 throw new IllegalArgumentException("Cannot query unknown URI " + uri);
         }
@@ -74,6 +86,10 @@ public class WorkoutProvider extends ContentProvider {
                 return MuscleGroupEntry.CONTENT_TYPE;
             case MUSCLE_ID:
                 return MuscleGroupEntry.CONTENT_ITEM_TYPE;
+            case ACTIVITY:
+                return ActivityEntry.CONTENT_TYPE;
+            case ACTIVITY_ID:
+                return ActivityEntry.CONTENT_ITEM_TYPE;
             default:
                 throw new IllegalArgumentException("Unknown URI " + uri + " with match " + match);
         }
@@ -86,6 +102,8 @@ public class WorkoutProvider extends ContentProvider {
         switch (match) {
             case MUSCLE:
                 return insertMuscle(uri, contentValues);
+            case ACTIVITY:
+                return insertActivity(uri, contentValues);
             default:
                 throw new IllegalArgumentException("Insertion is not supported for " + uri);
         }
@@ -101,6 +119,28 @@ public class WorkoutProvider extends ContentProvider {
         SQLiteDatabase database = mHelper.getWritableDatabase();
 
         long id = database.insert(MuscleGroupEntry.TABLE_NAME, null, contentValues);
+
+        if (id == -1) {
+            Log.e(LOG_TAG, "Failed to insert row for " + uri);
+            return null;
+        }
+
+        //notify listeners that there has been a change
+        getContext().getContentResolver().notifyChange(uri, null);
+
+        return ContentUris.withAppendedId(uri, id);
+    }
+
+    private Uri insertActivity(Uri uri, ContentValues contentValues) {
+        //Check that name is not null
+        String name = contentValues.getAsString(ActivityEntry.COLUMN_ACTIVITY_NAME);
+        if (name == null) {
+            throw new IllegalArgumentException("Product requires a name");
+        }
+
+        SQLiteDatabase database = mHelper.getWritableDatabase();
+
+        long id = database.insert(ActivityEntry.TABLE_NAME, null, contentValues);
 
         if (id == -1) {
             Log.e(LOG_TAG, "Failed to insert row for " + uri);

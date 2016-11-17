@@ -25,6 +25,11 @@
                 android:value=".MainActivity" />
         </activity>
 
+        <activity
+            android:name=".ActivitiesList">
+            
+        </activity>
+
         <provider
             android:name="com.example.android.workout.data.WorkoutProvider"
             android:authorities="com.example.android.workout"

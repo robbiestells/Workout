@@ -9,6 +9,7 @@ import android.widget.CursorAdapter;
 import android.widget.TextView;
 
 import com.example.android.workout.R;
+import com.example.android.workout.data.WorkoutContract.ActivityEntry;
 
 /**
  * Created by rsteller on 11/16/2016.
@@ -27,13 +28,13 @@ public class ActivitiesCursorAdapter extends CursorAdapter {
 
     @Override
     public void bindView(View view, Context context, Cursor cursor) {
-        final int itemId = cursor.getInt(cursor.getColumnIndex(WorkoutContract.ActivityEntry._ID));
+        final int itemId = cursor.getInt(cursor.getColumnIndex(ActivityEntry._ID));
 
         //find name, quanity, price, and image views
         final TextView tvName = (TextView) view.findViewById(R.id.muscleName);
 
         //find columns in table
-        int nameColumnIndex = cursor.getColumnIndex(WorkoutContract.ActivityEntry.COLUMN_ACTIVITY_NAME);
+        int nameColumnIndex = cursor.getColumnIndex(ActivityEntry.COLUMN_ACTIVITY_NAME);
 
         //get data from table
         String name = cursor.getString(nameColumnIndex);

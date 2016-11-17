@@ -5,6 +5,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 //import com.example.android.workout.data.WorkoutContract.ActivityEntry;
+import com.example.android.workout.data.WorkoutContract.ActivityEntry;
 import com.example.android.workout.data.WorkoutContract.MuscleGroupEntry;
 //import com.example.android.workout.data.WorkoutContract.SessionEntry;
 
@@ -31,19 +32,19 @@ public class WorkoutDbHelper extends SQLiteOpenHelper {
                 MuscleGroupEntry.COLUMN_MG_COLOR + " TEXT " +
                 " );";
 
-//        final String SQL_CREATE_ACTIVITIES_TABLE = "CREATE TABLE " + ActivityEntry.TABLE_NAME + " (" +
-//                ActivityEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-//
-//                // the ID of the musclegroup entry associated with this activity data
-//                ActivityEntry.COLUMN_ACTIVITY_MG_ID + " INTEGER NOT NULL, " +
-//                ActivityEntry.COLUMN_ACTIVITY_NAME + " TEXT NOT NULL, " +
-//                ActivityEntry.COLUMN_ACTIVITY_DESCRIPTION + " TEXT, " +
-//                ActivityEntry.COLUMN_ACTIVITY_IMAGE + " TEXT, " +
-//                ActivityEntry.COLUMN_ACTIVITY_VIDEO + " TEXT, " +
-//
-//                // Set up the location column as a foreign key to location table.
-//                " FOREIGN KEY (" + ActivityEntry.COLUMN_ACTIVITY_MG_ID + ") REFERENCES " +
-//                MuscleGroupEntry.TABLE_NAME + " (" + MuscleGroupEntry._ID + " );";
+        final String SQL_CREATE_ACTIVITIES_TABLE = "CREATE TABLE " + ActivityEntry.TABLE_NAME + " (" +
+                ActivityEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+
+                // the ID of the musclegroup entry associated with this activity data
+                ActivityEntry.COLUMN_ACTIVITY_MG_ID + " INTEGER NOT NULL, " +
+                ActivityEntry.COLUMN_ACTIVITY_NAME + " TEXT NOT NULL, " +
+                ActivityEntry.COLUMN_ACTIVITY_DESCRIPTION + " TEXT, " +
+                ActivityEntry.COLUMN_ACTIVITY_IMAGE + " TEXT, " +
+                ActivityEntry.COLUMN_ACTIVITY_VIDEO + " TEXT, " +
+
+                // Set up the location column as a foreign key to location table.
+                " FOREIGN KEY (" + ActivityEntry.COLUMN_ACTIVITY_MG_ID + ") REFERENCES " +
+                MuscleGroupEntry.TABLE_NAME + " (" + MuscleGroupEntry._ID + " );";
 //
 //        final String SQL_CREATE_SESSIONS_TABLE = "CREATE TABLE " + SessionEntry.TABLE_NAME + " (" +
 //                SessionEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
@@ -62,14 +63,14 @@ public class WorkoutDbHelper extends SQLiteOpenHelper {
 //                ActivityEntry.TABLE_NAME + " (" + ActivityEntry._ID + " );";
 
         sqLiteDatabase.execSQL(SQL_CREATE_MUSCLEGROUP_TABLE);
-//        sqLiteDatabase.execSQL(SQL_CREATE_ACTIVITIES_TABLE);
+        sqLiteDatabase.execSQL(SQL_CREATE_ACTIVITIES_TABLE);
 //        sqLiteDatabase.execSQL(SQL_CREATE_SESSIONS_TABLE);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + MuscleGroupEntry.TABLE_NAME);
-//        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + ActivityEntry.TABLE_NAME);
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + ActivityEntry.TABLE_NAME);
 //        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + SessionEntry.TABLE_NAME);
         onCreate(sqLiteDatabase);
     }
