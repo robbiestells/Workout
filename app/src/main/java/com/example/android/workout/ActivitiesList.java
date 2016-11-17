@@ -21,17 +21,19 @@ import com.example.android.workout.data.ActivitiesCursorAdapter;
 import com.example.android.workout.data.MuscleGroupCursorAdapter;
 import com.example.android.workout.data.WorkoutContract;
 
-public class MainActivity extends AppCompatActivity implements LoaderCallbacks<Cursor> {
+import static com.example.android.workout.R.id.muscleListView;
 
-    private final String LOG_TAG = MainActivity.class.getSimpleName();
+public class ActivitiesList extends AppCompatActivity implements LoaderCallbacks<Cursor> {
+
+    private final String LOG_TAG = ActivitiesList.class.getSimpleName();
 
     private static final int URL_LOADER = 0;
 
-    MuscleGroupCursorAdapter mCursorAdapter;
-
     ActivitiesCursorAdapter mActivitiesAdapter;
 
-    private Uri mCurrentProductUri;
+    private Uri mCurrentActivity;
+
+    private Uri mCurrentMuscleGroup;
 
 
     @Override
@@ -40,50 +42,41 @@ public class MainActivity extends AppCompatActivity implements LoaderCallbacks<C
         setContentView(R.layout.activity_main);
 
         Intent intent = getIntent();
-        mCurrentProductUri = intent.getData();
-
-//        mNameEditText = (EditText) findViewById(R.id.MuscleNameEditText);
+        mCurrentMuscleGroup = intent.getData();
+//       mNameEditText = (EditText) findViewById(R.id.MuscleNameEditText);
 
         //set up FAB to open Product Editor
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, AddMuscle.class);
+                Intent intent = new Intent(ActivitiesList.this, AddMuscle.class);
                 startActivity(intent);
             }
         });
 
-        ListView muscleListView = (ListView) findViewById(R.id.muscleListView);
+        ListView listView = (ListView) findViewById(R.id.muscleListView);
         View emptyView = findViewById(R.id.empty_text);
-        muscleListView.setEmptyView(emptyView);
+        listView.setEmptyView(emptyView);
 
-        muscleListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(MainActivity.this, ActivitiesList.class);
-
-                Uri selectedMuscle = ContentUris.withAppendedId(WorkoutContract.MuscleGroupEntry.CONTENT_URI, id);
-
-                intent.setData(selectedMuscle);
-
-                startActivity(intent);
+//                Intent intent = new Intent(MainActivity.this, MainActivity.class);
+//
+//                Uri selectedMuscle = ContentUris.withAppendedId(WorkoutContract.MuscleGroupEntry.CONTENT_URI, id);
+//
+//                intent.setData(selectedMuscle);
+//
+//                startActivity(intent);
             }
         });
 
-        if (mCurrentProductUri == null) {
-            setTitle("Muscle Groups");
-            //   invalidateOptionsMenu();
-            mCursorAdapter = new MuscleGroupCursorAdapter(this,null);
-            muscleListView.setAdapter(mCursorAdapter);
-            getSupportLoaderManager().initLoader(URL_LOADER, null, this);
-        } else {
-            setTitle("Activities");
-            //TODO load activities
-            mActivitiesAdapter = new ActivitiesCursorAdapter(this, null);
-            muscleListView.setAdapter(mActivitiesAdapter);
-            getSupportLoaderManager().initLoader(URL_LOADER, null, this);
-        }
+//        setTitle("Activities");
+//        //TODO load activities
+//        mActivitiesAdapter = new ActivitiesCursorAdapter(this, null);
+//        muscleListView.setAdapter(mActivitiesAdapter);
+//        getSupportLoaderManager().initLoader(URL_LOADER, null, this);
 
     }
 
@@ -98,7 +91,7 @@ public class MainActivity extends AppCompatActivity implements LoaderCallbacks<C
         };
         return new CursorLoader(
                 this,
-               WorkoutContract.MuscleGroupEntry.CONTENT_URI,
+                WorkoutContract.MuscleGroupEntry.CONTENT_URI,
                 projection,
                 null,
                 null,
@@ -108,11 +101,11 @@ public class MainActivity extends AppCompatActivity implements LoaderCallbacks<C
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
-        mCursorAdapter.swapCursor(cursor);
+        mActivitiesAdapter.swapCursor(cursor);
     }
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-        mCursorAdapter.swapCursor(null);
+        mActivitiesAdapter.swapCursor(null);
     }
 }

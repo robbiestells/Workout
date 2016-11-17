@@ -37,6 +37,7 @@ public class AddMuscle  extends AppCompatActivity implements LoaderManager.Loade
     private Uri mCurrentProductUri;
 
     private EditText mNameEditText;
+    private EditText mMucleImageEditText;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -47,6 +48,7 @@ public class AddMuscle  extends AppCompatActivity implements LoaderManager.Loade
         mCurrentProductUri = intent.getData();
 
         mNameEditText = (EditText) findViewById(R.id.MuscleNameEditText);
+        mMucleImageEditText = (EditText) findViewById(R.id.MuscleImage);
 
         if (mCurrentProductUri == null) {
             setTitle("Add Muscle Group");
@@ -115,10 +117,12 @@ public class AddMuscle  extends AppCompatActivity implements LoaderManager.Loade
 
         //get all data from fields
         String nameString = mNameEditText.getText().toString().trim();
+        String imageString = mMucleImageEditText.getText().toString().trim();
 
         //put all values into ContentValues
         ContentValues values = new ContentValues();
         values.put(WorkoutContract.MuscleGroupEntry.COLUMN_MG_NAME, nameString);
+        values.put(WorkoutContract.MuscleGroupEntry.COLUMN_MG_IMAGE, imageString);
 
         //if new product, insert values to new row and show Toast, otherwise, update product row
         if (mCurrentProductUri == null) {
@@ -172,7 +176,7 @@ public class AddMuscle  extends AppCompatActivity implements LoaderManager.Loade
     public void onLoaderReset(Loader<Cursor> loader) {
         //on reset, clear all fields
         mNameEditText.setText("");
-
+        mMucleImageEditText.setText("");
     }
 
 
@@ -180,11 +184,13 @@ public class AddMuscle  extends AppCompatActivity implements LoaderManager.Loade
         //if the cursor is not null, load data into views
         if (data.moveToFirst()) {
             int nameColumnIndext = data.getColumnIndex(WorkoutContract.MuscleGroupEntry.COLUMN_MG_NAME);
+            int imageColumnIndext = data.getColumnIndex(WorkoutContract.MuscleGroupEntry.COLUMN_MG_IMAGE);
 
             String name = data.getString(nameColumnIndext);
+            String image = data.getString(imageColumnIndext);
 
             mNameEditText.setText(name);
-
+            mMucleImageEditText.setText(image);
         }
     }
 }
