@@ -113,7 +113,7 @@ public class WorkoutProvider extends ContentProvider {
         //Check that name is not null
         String name = contentValues.getAsString(MuscleGroupEntry.COLUMN_MG_NAME);
         if (name == null) {
-            throw new IllegalArgumentException("Product requires a name");
+            throw new IllegalArgumentException("Muscle Group requires a name");
         }
 
         SQLiteDatabase database = mHelper.getWritableDatabase();
@@ -135,7 +135,7 @@ public class WorkoutProvider extends ContentProvider {
         //Check that name is not null
         String name = contentValues.getAsString(ActivityEntry.COLUMN_ACTIVITY_NAME);
         if (name == null) {
-            throw new IllegalArgumentException("Product requires a name");
+            throw new IllegalArgumentException("Activity requires a name");
         }
 
         SQLiteDatabase database = mHelper.getWritableDatabase();

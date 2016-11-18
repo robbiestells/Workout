@@ -15,7 +15,7 @@ import com.example.android.workout.data.WorkoutContract.MuscleGroupEntry;
 
 public class WorkoutDbHelper extends SQLiteOpenHelper {
 
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 3;
 
     static final String DATABASE_NAME = "workout.db";
 
@@ -36,15 +36,12 @@ public class WorkoutDbHelper extends SQLiteOpenHelper {
                 ActivityEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
 
                 // the ID of the musclegroup entry associated with this activity data
-                ActivityEntry.COLUMN_ACTIVITY_MG_ID + " INTEGER NOT NULL, " +
+                ActivityEntry.COLUMN_ACTIVITY_MG_ID + " INTEGER, " +
                 ActivityEntry.COLUMN_ACTIVITY_NAME + " TEXT NOT NULL, " +
                 ActivityEntry.COLUMN_ACTIVITY_DESCRIPTION + " TEXT, " +
                 ActivityEntry.COLUMN_ACTIVITY_IMAGE + " TEXT, " +
-                ActivityEntry.COLUMN_ACTIVITY_VIDEO + " TEXT, " +
-
-                // Set up the location column as a foreign key to location table.
-                " FOREIGN KEY (" + ActivityEntry.COLUMN_ACTIVITY_MG_ID + ") REFERENCES " +
-                MuscleGroupEntry.TABLE_NAME + " (" + MuscleGroupEntry._ID + " );";
+                ActivityEntry.COLUMN_ACTIVITY_VIDEO + " TEXT " +
+                " );";
 //
 //        final String SQL_CREATE_SESSIONS_TABLE = "CREATE TABLE " + SessionEntry.TABLE_NAME + " (" +
 //                SessionEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +

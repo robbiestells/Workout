@@ -1,27 +1,22 @@
 package com.example.android.workout;
 
-import android.content.ContentUris;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
-import android.support.v4.content.Loader;
 import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.android.workout.data.ActivitiesCursorAdapter;
-import com.example.android.workout.data.MuscleGroupCursorAdapter;
-import com.example.android.workout.data.WorkoutContract;
 import com.example.android.workout.data.WorkoutContract.ActivityEntry;
+import com.example.android.workout.data.WorkoutContract.MuscleGroupEntry;
 
 import static com.example.android.workout.R.id.muscleListView;
 
@@ -29,13 +24,18 @@ public class ActivitiesList extends AppCompatActivity implements LoaderCallbacks
 
     private final String LOG_TAG = ActivitiesList.class.getSimpleName();
 
-    private static final int URL_LOADER = 0;
+    private static final int MUSCLE_LOADER = 0;
+    private static final int ACTIVITY_LOADER = 1;
 
     ActivitiesCursorAdapter mActivitiesAdapter;
 
     private Uri mCurrentActivity;
 
     private Uri mCurrentMuscleGroup;
+
+    private String muscleId;
+
+    private boolean muscleFound = false;
 
 
     @Override
@@ -52,12 +52,14 @@ public class ActivitiesList extends AppCompatActivity implements LoaderCallbacks
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(ActivitiesList.this, AddMuscle.class);
+                Intent intent = new Intent(ActivitiesList.this, AddActivity.class);
                 startActivity(intent);
             }
         });
 
-        ListView listView = (ListView) findViewById(R.id.muscleListView);
+        getSupportLoaderManager().initLoader(MUSCLE_LOADER, null, this);
+
+        ListView listView = (ListView) findViewById(muscleListView);
         TextView emptyText = (TextView) findViewById(R.id.empty_text);
         emptyText.setText("Add Activity");
         View emptyView = findViewById(R.id.empty_text);
@@ -78,37 +80,71 @@ public class ActivitiesList extends AppCompatActivity implements LoaderCallbacks
 
         setTitle("Activities");
 //        //TODO load activities
-//        mActivitiesAdapter = new ActivitiesCursorAdapter(this, null);
-//        muscleListView.setAdapter(mActivitiesAdapter);
-//        getSupportLoaderManager().initLoader(URL_LOADER, null, this);
+        mActivitiesAdapter = new ActivitiesCursorAdapter(this, null);
+        listView.setAdapter(mActivitiesAdapter);
+        getSupportLoaderManager().initLoader(MUSCLE_LOADER, null, this);
 
     }
 
 
     @Override
-    public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
-        String[] projection = {
-                ActivityEntry._ID,
-                ActivityEntry.COLUMN_ACTIVITY_MG_ID,
-                ActivityEntry.COLUMN_ACTIVITY_NAME,
-                ActivityEntry.COLUMN_ACTIVITY_DESCRIPTION,
-                ActivityEntry.COLUMN_ACTIVITY_IMAGE,
-                ActivityEntry.COLUMN_ACTIVITY_VIDEO
-        };
+    public Loader<Cursor> onCreateLoader(int i, Bundle args) {
+        if (i == 0) {
+            String[] projection = {
+                    MuscleGroupEntry._ID,
+                    MuscleGroupEntry.COLUMN_MG_COLOR,
+                    MuscleGroupEntry.COLUMN_MG_IMAGE,
+                    MuscleGroupEntry.COLUMN_MG_NAME
+            };
+            return new CursorLoader(
+                    this,
+                    mCurrentMuscleGroup,
+                    projection,
+                    null,
+                    null,
+                    null
+            );
+        } else {
 
-        return new CursorLoader(
-                this,
-                ActivityEntry.CONTENT_URI,
-                projection,
-                null,
-                null,
-                null
-        );
+            String[] projection = {
+                    ActivityEntry._ID,
+                    ActivityEntry.COLUMN_ACTIVITY_MG_ID,
+                    ActivityEntry.COLUMN_ACTIVITY_NAME,
+                    ActivityEntry.COLUMN_ACTIVITY_DESCRIPTION,
+                    ActivityEntry.COLUMN_ACTIVITY_IMAGE,
+                    ActivityEntry.COLUMN_ACTIVITY_VIDEO
+            };
+
+            return new CursorLoader(
+                    this,
+                    ActivityEntry.CONTENT_URI,
+                    projection,
+                    null,
+                    null,
+                    null
+            );
+        }
     }
 
     @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
-        mActivitiesAdapter.swapCursor(cursor);
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        if (muscleFound != true) {
+            findActivitise(data);
+        } else{
+            //populate listview
+            mActivitiesAdapter.swapCursor(data);
+        }
+    }
+
+    private void findActivitise(Cursor data) {
+        if (data.moveToFirst()) {
+            int idColumnIndext = data.getColumnIndex(MuscleGroupEntry._ID);
+
+            muscleId = data.getString(idColumnIndext);
+            muscleFound = true;
+
+            getSupportLoaderManager().initLoader(ACTIVITY_LOADER, null, this);
+        }
     }
 
     @Override

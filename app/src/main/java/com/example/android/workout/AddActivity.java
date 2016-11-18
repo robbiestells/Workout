@@ -3,7 +3,6 @@ package com.example.android.workout;
 import android.app.LoaderManager;
 import android.content.ContentValues;
 import android.content.CursorLoader;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
@@ -11,31 +10,28 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NavUtils;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.example.android.workout.data.WorkoutContract;
+import com.example.android.workout.data.WorkoutContract.ActivityEntry;
 
 /**
  * Created by Rob on 11/14/2016.
  */
 
-public class AddMuscle extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>  {
+public class AddActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
     private static final int EXISTING_PRODUCT_LOADER = 0;
 
     private boolean mProductHasChanged = false;
 
-    private Uri mCurrentProductUri;
+    private Uri mCurrentActivityUri;
 
-    private EditText mNameEditText;
-    private EditText mMucleImageEditText;
+    private EditText mActivityNameEditText;
+    private EditText mActivityImageText;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -43,16 +39,16 @@ public class AddMuscle extends AppCompatActivity implements LoaderManager.Loader
         setContentView(R.layout.muscle_group_edit);
 
         Intent intent = getIntent();
-        mCurrentProductUri = intent.getData();
+        mCurrentActivityUri = intent.getData();
 
-        mNameEditText = (EditText) findViewById(R.id.MuscleNameEditText);
-        mMucleImageEditText = (EditText) findViewById(R.id.MuscleImage);
+        mActivityNameEditText = (EditText) findViewById(R.id.MuscleNameEditText);
+        mActivityImageText = (EditText) findViewById(R.id.MuscleImage);
 
-        if (mCurrentProductUri == null) {
-            setTitle("Add Muscle Group");
+        if (mCurrentActivityUri == null) {
+            setTitle("Add Activity");
             invalidateOptionsMenu();
         } else {
-            setTitle("Edit Muscle Group");
+            setTitle("Edit Activity");
             getLoaderManager().initLoader(EXISTING_PRODUCT_LOADER, null, this);
         }
     }
@@ -68,7 +64,7 @@ public class AddMuscle extends AppCompatActivity implements LoaderManager.Loader
         super.onPrepareOptionsMenu(menu);
 
         //only show delete button if editing product
-        if (mCurrentProductUri == null) {
+        if (mCurrentActivityUri == null) {
             MenuItem menuItem = menu.findItem(R.id.action_delete);
             menuItem.setVisible(false);
         }
@@ -80,11 +76,11 @@ public class AddMuscle extends AppCompatActivity implements LoaderManager.Loader
         switch (item.getItemId()) {
             case R.id.action_save:
                 //on selecting save, save the product
-                saveMuscleGroup();
+                saveActivity();
                 finish();
                 return true;
             case R.id.action_delete:
-                deleteMuscleGroup();
+                deleteActivity();
                 return true;
             case android.R.id.home:
                 NavUtils.navigateUpFromSameTask(this);
@@ -93,9 +89,9 @@ public class AddMuscle extends AppCompatActivity implements LoaderManager.Loader
         return super.onOptionsItemSelected(item);
     }
 
-    private void deleteMuscleGroup() {
-        if (mCurrentProductUri != null) {
-            int rowsDeleted = getContentResolver().delete(mCurrentProductUri, null, null);
+    private void deleteActivity() {
+        if (mCurrentActivityUri != null) {
+            int rowsDeleted = getContentResolver().delete(mCurrentActivityUri, null, null);
 
             if (rowsDeleted == 0) {
                 Toast.makeText(this, "Delete failed", Toast.LENGTH_SHORT).show();
@@ -106,25 +102,25 @@ public class AddMuscle extends AppCompatActivity implements LoaderManager.Loader
         finish();
     }
 
-    private void saveMuscleGroup() {
+    private void saveActivity() {
         //make sure all fields are filled out
-        if (TextUtils.isEmpty(mNameEditText.getText())) {
+        if (TextUtils.isEmpty(mActivityNameEditText.getText())) {
             Toast.makeText(this, "Name Required", Toast.LENGTH_SHORT).show();
             return;
         }
 
         //get all data from fields
-        String nameString = mNameEditText.getText().toString().trim();
-        String imageString = mMucleImageEditText.getText().toString().trim();
+        String nameString = mActivityNameEditText.getText().toString().trim();
+        String imageString = mActivityImageText.getText().toString().trim();
 
         //put all values into ContentValues
         ContentValues values = new ContentValues();
-        values.put(WorkoutContract.MuscleGroupEntry.COLUMN_MG_NAME, nameString);
-        values.put(WorkoutContract.MuscleGroupEntry.COLUMN_MG_IMAGE, imageString);
+        values.put(ActivityEntry.COLUMN_ACTIVITY_NAME, nameString);
+        values.put(ActivityEntry.COLUMN_ACTIVITY_IMAGE, imageString);
 
         //if new product, insert values to new row and show Toast, otherwise, update product row
-        if (mCurrentProductUri == null) {
-            Uri newUri = getContentResolver().insert(WorkoutContract.MuscleGroupEntry.CONTENT_URI, values);
+        if (mCurrentActivityUri == null) {
+            Uri newUri = getContentResolver().insert(ActivityEntry.CONTENT_URI, values);
             if (newUri == null) {
                 Toast.makeText(this, "insert failed", Toast.LENGTH_SHORT).show();
             } else {
@@ -132,7 +128,7 @@ public class AddMuscle extends AppCompatActivity implements LoaderManager.Loader
             }
         } else {
             int rowsAffected = getContentResolver().update(
-                    mCurrentProductUri,
+                    mCurrentActivityUri,
                     values,
                     null,
                     null
@@ -149,19 +145,21 @@ public class AddMuscle extends AppCompatActivity implements LoaderManager.Loader
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         String[] projection = {
-                WorkoutContract.MuscleGroupEntry._ID,
-                WorkoutContract.MuscleGroupEntry.COLUMN_MG_NAME,
-                WorkoutContract.MuscleGroupEntry.COLUMN_MG_COLOR,
-                WorkoutContract.MuscleGroupEntry.COLUMN_MG_IMAGE
+                ActivityEntry._ID,
+                ActivityEntry.COLUMN_ACTIVITY_NAME,
+                ActivityEntry.COLUMN_ACTIVITY_DESCRIPTION,
+                ActivityEntry.COLUMN_ACTIVITY_IMAGE,
+                ActivityEntry.COLUMN_ACTIVITY_VIDEO,
+                ActivityEntry.COLUMN_ACTIVITY_MG_ID
+
         };
         return new CursorLoader(this,
-                mCurrentProductUri,
+                mCurrentActivityUri,
                 projection,
                 null,
                 null,
                 null);
     }
-
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
@@ -174,22 +172,22 @@ public class AddMuscle extends AppCompatActivity implements LoaderManager.Loader
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
         //on reset, clear all fields
-        mNameEditText.setText("");
-        mMucleImageEditText.setText("");
+        mActivityNameEditText.setText("");
+        mActivityImageText.setText("");
     }
 
 
     private void updateViews(Cursor data) {
         //if the cursor is not null, load data into views
         if (data.moveToFirst()) {
-            int nameColumnIndext = data.getColumnIndex(WorkoutContract.MuscleGroupEntry.COLUMN_MG_NAME);
-            int imageColumnIndext = data.getColumnIndex(WorkoutContract.MuscleGroupEntry.COLUMN_MG_IMAGE);
+            int nameColumnIndext = data.getColumnIndex(ActivityEntry.COLUMN_ACTIVITY_NAME);
+            int imageColumnIndext = data.getColumnIndex(ActivityEntry.COLUMN_ACTIVITY_IMAGE);
 
             String name = data.getString(nameColumnIndext);
             String image = data.getString(imageColumnIndext);
 
-            mNameEditText.setText(name);
-            mMucleImageEditText.setText(image);
+            mActivityNameEditText.setText(name);
+            mActivityImageText.setText(image);
         }
     }
 }

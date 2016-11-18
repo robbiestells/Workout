@@ -2,6 +2,7 @@ package com.example.android.workout.data;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -46,6 +47,10 @@ public class MuscleGroupCursorAdapter extends CursorAdapter {
 
         //assign data to views
         tvName.setText(name);
-        Picasso.with(context).load(image).into(ivMuscle);
+        if (!image.isEmpty()) {
+            Picasso.with(context).load(image).into(ivMuscle);
+        } else {
+            tvName.setTextColor(Color.BLACK);
+        }
     }
 }

@@ -4,20 +4,15 @@ import android.content.ContentUris;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
-import android.provider.BaseColumns;
+import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
-import android.support.v4.content.Loader;
 import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.android.workout.data.ActivitiesCursorAdapter;
 import com.example.android.workout.data.MuscleGroupCursorAdapter;
@@ -66,9 +61,6 @@ public class MainActivity extends AppCompatActivity implements LoaderCallbacks<C
                 Intent intent = new Intent(MainActivity.this, ActivitiesList.class);
 
                 Uri selectedMuscle = ContentUris.withAppendedId(WorkoutContract.MuscleGroupEntry.CONTENT_URI, id);
-
-                Cursor cursor = (Cursor) parent.getItemAtPosition(position);
-                String selectedId = cursor.getString(cursor.getColumnIndex(BaseColumns._ID));
 
                 intent.setData(selectedMuscle);
 
