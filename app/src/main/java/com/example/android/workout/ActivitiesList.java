@@ -53,6 +53,7 @@ public class ActivitiesList extends AppCompatActivity implements LoaderCallbacks
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(ActivitiesList.this, AddActivity.class);
+                intent.putExtra("MuscleId", muscleId);
                 startActivity(intent);
             }
         });
@@ -82,7 +83,7 @@ public class ActivitiesList extends AppCompatActivity implements LoaderCallbacks
 //        //TODO load activities
         mActivitiesAdapter = new ActivitiesCursorAdapter(this, null);
         listView.setAdapter(mActivitiesAdapter);
-        getSupportLoaderManager().initLoader(MUSCLE_LOADER, null, this);
+        //getSupportLoaderManager().initLoader(MUSCLE_LOADER, null, this);
 
     }
 
@@ -115,12 +116,15 @@ public class ActivitiesList extends AppCompatActivity implements LoaderCallbacks
                     ActivityEntry.COLUMN_ACTIVITY_VIDEO
             };
 
+            String selection = ActivityEntry.COLUMN_ACTIVITY_MG_ID + "=?";
+            String[] selectionArgs = {muscleId};
+
             return new CursorLoader(
                     this,
                     ActivityEntry.CONTENT_URI,
                     projection,
-                    null,
-                    null,
+                    selection,
+                    selectionArgs,
                     null
             );
         }
@@ -128,19 +132,20 @@ public class ActivitiesList extends AppCompatActivity implements LoaderCallbacks
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        if (muscleFound != true) {
-            findActivitise(data);
+        if (!muscleFound) {
+            findActivities(data);
         } else{
             //populate listview
             mActivitiesAdapter.swapCursor(data);
         }
     }
 
-    private void findActivitise(Cursor data) {
+    private void findActivities(Cursor data) {
         if (data.moveToFirst()) {
-            int idColumnIndext = data.getColumnIndex(MuscleGroupEntry._ID);
+            int idColumnIndex = data.getColumnIndex(MuscleGroupEntry._ID);
 
-            muscleId = data.getString(idColumnIndext);
+            muscleId = data.getString(idColumnIndex);
+            if (muscleId!=null)
             muscleFound = true;
 
             getSupportLoaderManager().initLoader(ACTIVITY_LOADER, null, this);

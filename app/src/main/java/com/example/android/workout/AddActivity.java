@@ -15,6 +15,7 @@ import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.android.workout.data.WorkoutContract.ActivityEntry;
@@ -30,6 +31,8 @@ public class AddActivity extends AppCompatActivity implements LoaderManager.Load
 
     private Uri mCurrentActivityUri;
 
+    private String muscleId;
+
     private EditText mActivityNameEditText;
     private EditText mActivityImageText;
 
@@ -39,7 +42,8 @@ public class AddActivity extends AppCompatActivity implements LoaderManager.Load
         setContentView(R.layout.muscle_group_edit);
 
         Intent intent = getIntent();
-        mCurrentActivityUri = intent.getData();
+        muscleId = intent.getExtras().getString("MuscleId");
+//        mCurrentActivityUri = intent.getData();
 
         mActivityNameEditText = (EditText) findViewById(R.id.MuscleNameEditText);
         mActivityImageText = (EditText) findViewById(R.id.MuscleImage);
@@ -117,6 +121,7 @@ public class AddActivity extends AppCompatActivity implements LoaderManager.Load
         ContentValues values = new ContentValues();
         values.put(ActivityEntry.COLUMN_ACTIVITY_NAME, nameString);
         values.put(ActivityEntry.COLUMN_ACTIVITY_IMAGE, imageString);
+        values.put(ActivityEntry.COLUMN_ACTIVITY_MG_ID, muscleId);
 
         //if new product, insert values to new row and show Toast, otherwise, update product row
         if (mCurrentActivityUri == null) {
