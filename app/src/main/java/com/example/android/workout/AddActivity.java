@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -41,9 +42,14 @@ public class AddActivity extends AppCompatActivity implements LoaderManager.Load
         super.onCreate(savedInstanceState);
         setContentView(R.layout.muscle_group_edit);
 
+        Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
+        setSupportActionBar(myToolbar);
+
         Intent intent = getIntent();
         muscleId = intent.getExtras().getString("MuscleId");
 //        mCurrentActivityUri = intent.getData();
+
+
 
         mActivityNameEditText = (EditText) findViewById(R.id.MuscleNameEditText);
         mActivityImageText = (EditText) findViewById(R.id.MuscleImage);
