@@ -55,18 +55,21 @@ public class MainActivity extends AppCompatActivity implements LoaderCallbacks<C
         View emptyView = findViewById(R.id.empty_text);
         muscleListView.setEmptyView(emptyView);
 
-        muscleListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(MainActivity.this, ActivitiesList.class);
-
-                Uri selectedMuscle = ContentUris.withAppendedId(WorkoutContract.MuscleGroupEntry.CONTENT_URI, id);
-
-                intent.setData(selectedMuscle);
-
-                startActivity(intent);
-            }
-        });
+//        muscleListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//                Intent intent = new Intent(MainActivity.this, ActivitiesList.class);
+//
+//                Uri selectedMuscle = ContentUris.withAppendedId(WorkoutContract.MuscleGroupEntry.CONTENT_URI, id);
+//
+//                intent.setData(selectedMuscle);
+//
+//                //TODO get selected group
+//                intent.putExtra("group", "test");
+//
+//                startActivity(intent);
+//            }
+//        });
 
         if (mCurrentProductUri == null) {
             setTitle("Muscle Groups");

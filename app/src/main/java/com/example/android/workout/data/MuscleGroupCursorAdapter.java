@@ -1,8 +1,11 @@
 package com.example.android.workout.data;
 
+import android.content.ContentUris;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,8 +13,12 @@ import android.widget.CursorAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.android.workout.ActivitiesList;
+import com.example.android.workout.MainActivity;
 import com.example.android.workout.R;
 import com.squareup.picasso.Picasso;
+
+import static android.R.attr.id;
 
 /**
  * Created by Rob on 11/14/2016.
@@ -30,7 +37,7 @@ public class MuscleGroupCursorAdapter extends CursorAdapter {
     }
 
     @Override
-    public void bindView(View view, Context context, Cursor cursor) {
+    public void bindView(View view, final Context context, Cursor cursor) {
         final int itemId = cursor.getInt(cursor.getColumnIndex(WorkoutContract.MuscleGroupEntry._ID));
 
         //find views
@@ -42,8 +49,8 @@ public class MuscleGroupCursorAdapter extends CursorAdapter {
         int imageColumnIndex = cursor.getColumnIndex(WorkoutContract.MuscleGroupEntry.COLUMN_MG_IMAGE);
 
         //get data from table
-        String name = cursor.getString(nameColumnIndex);
-        String image = cursor.getString(imageColumnIndex);
+        final String name = cursor.getString(nameColumnIndex);
+        final String image = cursor.getString(imageColumnIndex);
 
         //assign data to views
         tvName.setText(name);
@@ -52,5 +59,20 @@ public class MuscleGroupCursorAdapter extends CursorAdapter {
         } else {
             tvName.setTextColor(Color.BLACK);
         }
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, ActivitiesList.class);
+                Uri selectedMuscle = ContentUris.withAppendedId(WorkoutContract.MuscleGroupEntry.CONTENT_URI, itemId);
+
+                intent.setData(selectedMuscle);
+
+                //TODO get selected group
+                intent.putExtra("group", name);
+                intent.putExtra("image", image);
+
+                context.startActivity(intent);
+            }
+        });
     }
 }

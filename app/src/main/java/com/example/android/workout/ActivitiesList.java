@@ -11,14 +11,18 @@ import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.android.workout.data.ActivitiesCursorAdapter;
 import com.example.android.workout.data.WorkoutContract.ActivityEntry;
 import com.example.android.workout.data.WorkoutContract.MuscleGroupEntry;
+import com.squareup.picasso.Picasso;
 
+import static android.R.attr.data;
 import static com.example.android.workout.R.id.muscleListView;
+import static com.example.android.workout.R.id.toolbarText;
 
 public class ActivitiesList extends AppCompatActivity implements LoaderCallbacks<Cursor> {
 
@@ -37,6 +41,10 @@ public class ActivitiesList extends AppCompatActivity implements LoaderCallbacks
 
     private boolean muscleFound = false;
 
+    private String muscleGroup;
+
+    private String muscleImage;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +54,9 @@ public class ActivitiesList extends AppCompatActivity implements LoaderCallbacks
         Intent intent = getIntent();
         mCurrentMuscleGroup = intent.getData();
 //       mNameEditText = (EditText) findViewById(R.id.MuscleNameEditText);
+
+        muscleGroup = intent.getStringExtra("group");
+        muscleImage = intent.getStringExtra("image");
 
         //set up FAB to open Product Editor
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -79,7 +90,13 @@ public class ActivitiesList extends AppCompatActivity implements LoaderCallbacks
             }
         });
 
-        setTitle("Activities");
+        TextView toolBarText = (TextView) findViewById(R.id.toolbarText);
+        toolBarText.setText(muscleGroup);
+
+        ImageView toolBarImage = (ImageView) findViewById(R.id.toolbarImage);
+        if (!muscleImage.isEmpty()) {
+            Picasso.with(this).load(muscleImage).into(toolBarImage);
+        }
 //        //TODO load activities
         mActivitiesAdapter = new ActivitiesCursorAdapter(this, null);
         listView.setAdapter(mActivitiesAdapter);
@@ -137,6 +154,7 @@ public class ActivitiesList extends AppCompatActivity implements LoaderCallbacks
         } else{
             //populate listview
             mActivitiesAdapter.swapCursor(data);
+
         }
     }
 

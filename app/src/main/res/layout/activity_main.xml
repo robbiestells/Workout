@@ -25,7 +25,10 @@
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:id="@+id/toolbarImage"/>
+            android:id="@+id/toolbarImage"
+            android:scaleType="centerCrop"
+            android:foreground="#c20066ff"
+            />
         <TextView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
