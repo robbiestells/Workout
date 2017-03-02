@@ -15,10 +15,10 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.example.android.workout.data.ActivitiesCursorAdapter;
 import com.example.android.workout.data.WorkoutContract.ActivityEntry;
 import com.example.android.workout.data.WorkoutContract.MuscleGroupEntry;
-import com.squareup.picasso.Picasso;
 
 import static android.R.attr.data;
 import static com.example.android.workout.R.id.muscleListView;
@@ -95,7 +95,7 @@ public class ActivitiesList extends AppCompatActivity implements LoaderCallbacks
 
         ImageView toolBarImage = (ImageView) findViewById(R.id.toolbarImage);
         if (!muscleImage.isEmpty()) {
-            Picasso.with(this).load(muscleImage).into(toolBarImage);
+            Glide.with(this).load(muscleImage).into(toolBarImage);
         }
 //        //TODO load activities
         mActivitiesAdapter = new ActivitiesCursorAdapter(this, null);

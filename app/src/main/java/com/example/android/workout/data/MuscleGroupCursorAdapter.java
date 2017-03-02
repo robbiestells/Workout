@@ -4,7 +4,10 @@ import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.ColorFilter;
+import android.graphics.LightingColorFilter;
 import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,10 +16,10 @@ import android.widget.CursorAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.example.android.workout.ActivitiesList;
 import com.example.android.workout.MainActivity;
 import com.example.android.workout.R;
-import com.squareup.picasso.Picasso;
 
 import static android.R.attr.id;
 
@@ -52,10 +55,15 @@ public class MuscleGroupCursorAdapter extends CursorAdapter {
         final String name = cursor.getString(nameColumnIndex);
         final String image = cursor.getString(imageColumnIndex);
 
+        String color = "#c20066ff";
+        ColorFilter colorFilter = new LightingColorFilter(Color.parseColor(color), Color.parseColor(color));
+        ivMuscle.setColorFilter(colorFilter);
+
         //assign data to views
         tvName.setText(name);
         if (!image.isEmpty()) {
-            Picasso.with(context).load(image).into(ivMuscle);
+            ivMuscle.setImageBitmap(BitmapFactory.decodeFile(image));
+            Glide.with(context).load(image).into(ivMuscle);
         } else {
             tvName.setTextColor(Color.BLACK);
         }
