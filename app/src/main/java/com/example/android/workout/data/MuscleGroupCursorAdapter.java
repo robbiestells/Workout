@@ -37,6 +37,11 @@ public class MuscleGroupCursorAdapter extends CursorAdapter {
 
     @Override
     public View newView(Context context, Cursor cursor, ViewGroup viewGroup) {
+        colorNumber++;
+
+        if (colorNumber == 6){
+            colorNumber = 1;
+        }
         return LayoutInflater.from(context).inflate(R.layout.muscle_group_list_item, viewGroup, false);
     }
 
@@ -56,12 +61,8 @@ public class MuscleGroupCursorAdapter extends CursorAdapter {
         final String name = cursor.getString(nameColumnIndex);
         final String image = cursor.getString(imageColumnIndex);
 
-        colorNumber++;
-        String color;
-        if (colorNumber == 6){
-            colorNumber = 1;
-        }
 
+        final String color;
         switch(colorNumber){
             case 1: color = "#0066FF";
                 break;
@@ -82,7 +83,7 @@ public class MuscleGroupCursorAdapter extends CursorAdapter {
         //assign data to views
         tvName.setText(name);
         if (!image.isEmpty()) {
-            ivMuscle.setImageBitmap(BitmapFactory.decodeFile(image));
+           // ivMuscle.setImageBitmap(BitmapFactory.decodeFile(image));
             Glide.with(context).load(image).into(ivMuscle);
         } else {
             tvName.setTextColor(Color.BLACK);
@@ -98,6 +99,7 @@ public class MuscleGroupCursorAdapter extends CursorAdapter {
                 //TODO get selected group
                 intent.putExtra("group", name);
                 intent.putExtra("image", image);
+                intent.putExtra("color", color);
 
                 context.startActivity(intent);
             }

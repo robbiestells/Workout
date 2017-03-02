@@ -45,6 +45,8 @@ public class ActivitiesList extends AppCompatActivity implements LoaderCallbacks
 
     private String muscleImage;
 
+    private String muscleColor;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +59,7 @@ public class ActivitiesList extends AppCompatActivity implements LoaderCallbacks
 
         muscleGroup = intent.getStringExtra("group");
         muscleImage = intent.getStringExtra("image");
+        muscleColor = intent.getStringExtra("color");
 
         //set up FAB to open Product Editor
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
