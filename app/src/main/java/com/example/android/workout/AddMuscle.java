@@ -41,7 +41,7 @@ public class AddMuscle extends AppCompatActivity implements LoaderManager.Loader
     private Uri mCurrentProductUri;
 
     private EditText mNameEditText;
-    private EditText mMucleImageEditText;
+    //private EditText mMucleImageEditText;
     Button imagePicker;
     Uri picturePath;
 
@@ -59,7 +59,7 @@ public class AddMuscle extends AppCompatActivity implements LoaderManager.Loader
         mCurrentProductUri = intent.getData();
 
         mNameEditText = (EditText) findViewById(R.id.MuscleNameEditText);
-        mMucleImageEditText = (EditText) findViewById(R.id.MuscleImage);
+      //  mMucleImageEditText = (EditText) findViewById(R.id.MuscleImage);
 
         if (mCurrentProductUri == null) {
             setTitle("Add Muscle Group");
@@ -208,21 +208,25 @@ public class AddMuscle extends AppCompatActivity implements LoaderManager.Loader
     public void onLoaderReset(Loader<Cursor> loader) {
         //on reset, clear all fields
         mNameEditText.setText("");
-        mMucleImageEditText.setText("");
     }
 
 
     private void updateViews(Cursor data) {
         //if the cursor is not null, load data into views
         if (data.moveToFirst()) {
-            int nameColumnIndext = data.getColumnIndex(WorkoutContract.MuscleGroupEntry.COLUMN_MG_NAME);
-            int imageColumnIndext = data.getColumnIndex(WorkoutContract.MuscleGroupEntry.COLUMN_MG_IMAGE);
+            int nameColumnIndex = data.getColumnIndex(WorkoutContract.MuscleGroupEntry.COLUMN_MG_NAME);
+            int imageColumnIndex = data.getColumnIndex(WorkoutContract.MuscleGroupEntry.COLUMN_MG_IMAGE);
 
-            String name = data.getString(nameColumnIndext);
-            String image = data.getString(imageColumnIndext);
+            String name = data.getString(nameColumnIndex);
+            String image = data.getString(imageColumnIndex);
 
             mNameEditText.setText(name);
-            mMucleImageEditText.setText(image);
+         //   mMucleImageEditText.setText(image);
+            ImageView imageView = (ImageView) findViewById(R.id.imagePreview);
+            picturePath = Uri.parse(image);
+
+            Glide.with(getApplicationContext()).load(image).into(imageView);
+
         }
     }
 }

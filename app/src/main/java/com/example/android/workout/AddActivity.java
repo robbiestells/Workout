@@ -52,7 +52,7 @@ public class AddActivity extends AppCompatActivity implements LoaderManager.Load
 
 
         mActivityNameEditText = (EditText) findViewById(R.id.MuscleNameEditText);
-        mActivityImageText = (EditText) findViewById(R.id.MuscleImage);
+       // mActivityImageText = (EditText) findViewById(R.id.MuscleImage);
 
         if (mCurrentActivityUri == null) {
             setTitle("Add Activity");

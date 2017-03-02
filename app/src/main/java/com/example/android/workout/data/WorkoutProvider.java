@@ -159,7 +159,40 @@ public class WorkoutProvider extends ContentProvider {
     }
 
     @Override
-    public int update(Uri uri, ContentValues contentValues, String s, String[] strings) {
-        return 0;
+    public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
+        final int match = sUriMatcher.match(uri);
+        switch (match) {
+            case MUSCLE:
+                return updateItem(uri, values, selection, selectionArgs);
+            case MUSCLE_ID:
+                selection = ActivityEntry._ID + "=?";
+                selectionArgs = new String[]{String.valueOf(ContentUris.parseId(uri))};
+                return updateItem(uri, values, selection, selectionArgs);
+            default:
+                throw new IllegalArgumentException("Update is not supported for " + uri);
+        }
+
+    }
+    private int updateItem(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
+        //Check that name is not null
+        if (values.containsKey(MuscleGroupEntry.COLUMN_MG_NAME)) {
+            String name = values.getAsString(MuscleGroupEntry.COLUMN_MG_NAME);
+            if (name == null) {
+                throw new IllegalArgumentException("Product requires a name");
+            }
+        }
+
+        if (values.size() == 0) {
+            return 0;
+        }
+
+        SQLiteDatabase database = mHelper.getWritableDatabase();
+
+        int rowsUpdated = database.update(MuscleGroupEntry.TABLE_NAME, values, selection, selectionArgs);
+
+        if (rowsUpdated != 0) {
+            getContext().getContentResolver().notifyChange(uri, null);
+        }
+        return rowsUpdated;
     }
 }

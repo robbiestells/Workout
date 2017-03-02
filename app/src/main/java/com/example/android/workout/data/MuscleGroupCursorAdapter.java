@@ -18,6 +18,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.example.android.workout.ActivitiesList;
+import com.example.android.workout.AddMuscle;
 import com.example.android.workout.MainActivity;
 import com.example.android.workout.R;
 
@@ -102,6 +103,16 @@ public class MuscleGroupCursorAdapter extends CursorAdapter {
                 intent.putExtra("color", color);
 
                 context.startActivity(intent);
+            }
+        });
+        view.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                Intent intent = new Intent(context, AddMuscle.class);
+                Uri selectedMuscle = ContentUris.withAppendedId(WorkoutContract.MuscleGroupEntry.CONTENT_URI, itemId);
+                intent.setData(selectedMuscle);
+                context.startActivity(intent);
+                return false;
             }
         });
     }
