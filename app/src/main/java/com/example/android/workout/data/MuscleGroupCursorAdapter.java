@@ -29,6 +29,7 @@ import static android.R.attr.id;
 
 public class MuscleGroupCursorAdapter extends CursorAdapter {
 
+    private int colorNumber = 0;
 
     public MuscleGroupCursorAdapter(Context context, Cursor c) {
         super(context, c, 0);
@@ -55,7 +56,26 @@ public class MuscleGroupCursorAdapter extends CursorAdapter {
         final String name = cursor.getString(nameColumnIndex);
         final String image = cursor.getString(imageColumnIndex);
 
-        String color = "#c20066ff";
+        colorNumber++;
+        String color;
+        if (colorNumber == 6){
+            colorNumber = 1;
+        }
+
+        switch(colorNumber){
+            case 1: color = "#0066FF";
+                break;
+            case 2: color = "#009999";
+                break;
+            case 3: color = "#00CC99";
+                break;
+            case 4: color = "#CC9900";
+                break;
+            case 5: color = "#CC6633";
+                break;
+            default: color = "#0066FF";
+        }
+
         ColorFilter colorFilter = new LightingColorFilter(Color.parseColor(color), Color.parseColor(color));
         ivMuscle.setColorFilter(colorFilter);
 
